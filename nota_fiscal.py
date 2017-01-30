@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 from datetime import date
-
+from oberservers import imprimir, enviar_por_email, persistir
 
 class Item(object):
     def __init__(self, descricao, valor):
@@ -17,7 +17,7 @@ class Item(object):
 
 
 class Nota_fiscal(object):
-    def __init__(self, razao_social, cnpj, itens, data_de_emissao=date.today(), detalhes=''):
+    def __init__(self, razao_social, cnpj, itens, data_de_emissao=date.today(), detalhes='', observers=[]):
         self.__razao_social = razao_social
         self.__cnpj = cnpj
         self.__data_de_emissao = data_de_emissao
@@ -25,6 +25,9 @@ class Nota_fiscal(object):
             raise Exception('Detalhes da nota nao pode ter mais que 20 caracteres')
         self.__detalhes = detalhes
         self.__itens = itens
+
+        for observer in observers:
+            observer(self)
 
     @property
     def razao_social(self):
@@ -44,15 +47,10 @@ class Nota_fiscal(object):
 
 
 if __name__ == '__main__':
-    from nota_fiscal_builder import Nota_fiscal_builder
+    from oberservers import imprimir, enviar_por_email, persistir
 
     itens = [Item('Item A', 10.0), Item('Item B', 20.0)]
-
-    nota_fiscal = Nota_fiscal('FHSA Ltda', '012345678901234', itens, date.today(), '')
-    print nota_fiscal.data_de_emissao
-
-    nota_fiscal2 = (Nota_fiscal_builder()
-                    .com_razao_social('VSA Ltda')
-                    .com_cnpj('123123123')
-                    .com_itens(itens).construir())
-    print nota_fiscal2.cnpj
+    observers=[imprimir, enviar_por_email, persistir]
+    nota_fiscal = Nota_fiscal(razao_social='VSA Ltda',
+                    cnpj='123123123',itens=itens, observers=observers)
+    print nota_fiscal.cnpj
