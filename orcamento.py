@@ -108,13 +108,13 @@ class Orcamento(object):
         self.__itens.append(item)
 
     def aprovar(self):
-        self.estado_atual.aprovar(self)
+        self.estado_atual.aprovar(orcamento)
 
     def reprovar(self):
-        self.estado_atual.reprovar(self)
+        self.estado_atual.reprovar(orcamento)
 
     def finalizar(self):
-        self.estado_atual.finalizar(self)
+        self.estado_atual.finalizar(orcamento)
 
 
 class Item(object):
@@ -140,5 +140,6 @@ if __name__ == '__main__':
     print orcamento.valor
     orcamento.aprovar()
     orcamento.aplicar_desconto_extra()
+    orcamento.finalizar()
 
     print orcamento.valor
